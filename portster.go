@@ -20,8 +20,6 @@ var AWS_PUBLIC_HOST_IP = "http://169.254.169.254/latest/meta-data/public-ipv4"
 var hostIP string
 
 func main() {
-    client, _ := docker.NewClientFromEnv()
-
     hostIP = os.Getenv("HOST_IP")
     if( hostIP == "" ) {
         if( os.Getenv("AWS_EXTERNAL") == "true" ) {
@@ -36,6 +34,12 @@ func main() {
             hostIP = string(body)
         }
     }
+    endpoint := "tcp://"+hostIP+":2376"
+    path := os.Getenv("DOCKER_CERT_PATH")
+    ca := fmt.Sprintf("%s/ca.pem", path)
+    cert := fmt.Sprintf("%s/cert.pem", path)
+    key := fmt.Sprintf("%s/key.pem", path)
+    client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
 
     cmd := exec.Command("containerId.sh")
     output, _ := cmd.CombinedOutput()
