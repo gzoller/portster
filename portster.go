@@ -82,7 +82,7 @@ func GetPort(w http.ResponseWriter, r *http.Request) {
         if( found < 0 ) { 
             w.WriteHeader(http.StatusNotFound) 
         } else { 
-            fmt.Fprintln(w,found) 
+            fmt.Fprint(w,found) 
         }
     }
 }
