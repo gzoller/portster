@@ -58,7 +58,7 @@ func main() {
 }
 
 func GetHostIP(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintln(w,hostIP)
+    fmt.Fprint(w,hostIP)
 }
 
 func FindPort(port int64) int64 {
