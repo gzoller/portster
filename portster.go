@@ -23,28 +23,34 @@ func main() {
     hostIP = os.Getenv("HOST_IP")
     if( hostIP == "" ) {
         if( os.Getenv("AWS_EXTERNAL") == "true" ) {
+            fmt.Println("AWS external deployment")
             resp, _ := http.Get(AWS_PUBLIC_HOST_IP)
             defer resp.Body.Close()
             body, _ := ioutil.ReadAll(resp.Body)
             hostIP = string(body)
         } else {
+            fmt.Println("AWS internal deployment")
             resp, _ := http.Get(AWS_LOCAL_HOST_IP)
             defer resp.Body.Close()
             body, _ := ioutil.ReadAll(resp.Body)
             hostIP = string(body)
         }
+    } else {
+        fmt.Println("Non-AWS deployment")
     }
+    fmt.Println("Instance Host: "+hostIP)
     endpoint := "tcp://"+hostIP+":2376"
     path := os.Getenv("DOCKER_CERT_PATH")
     ca := fmt.Sprintf("%s/ca.pem", path)
     cert := fmt.Sprintf("%s/cert.pem", path)
     key := fmt.Sprintf("%s/key.pem", path)
     client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
+    fmt.Println("TLS client obtained")
 
     cmd := exec.Command("containerId.sh")
     output, _ := cmd.CombinedOutput()
     cid := strings.Trim(string(output),"\n")
-    fmt.Println(cid)
+    fmt.Println("Container: "+cid)
 
     container, _ := client.InspectContainer(cid)
     allPorts = container.NetworkSettings.PortMappingAPI()
