@@ -1,0 +1,54 @@
+I'm trying to get a portster-based image to work (example from akka-base) on AWS.
+
+I first built some pem files using this process:
+https://docs.docker.com/engine/security/https/
+
+Not really sure if I did it right, but I have 3 files and placed them in ~/.docker and
+restarted the daemon:
+	sudo service docker restart
+
+Then I ran the go.sh script here:
+
+#!/bin/bash
+docker run -it -P -v ~/.docker:/mnt/certs -e "DOCKER_TLS_VERIFY=true" gzoller/example:0.1-SNAPSHOT
+
+I get this output:
+
+[ec2-user@ip-172-31-19-99 ~]$ ./go.sh
+[fix-attrs.d] applying owners & permissions fixes...
+[fix-attrs.d] 00-runscripts: applying...
+[fix-attrs.d] 00-runscripts: exited 0.
+[fix-attrs.d] done.
+[cont-init.d] executing container initialization scripts...
+[cont-init.d] done.
+[services.d] starting services
+[services.d] done.
+AWS internal deployment
+Instance Host: 172.31.19.99
+TLS client obtained
+Container: 036b4e45c2391a10e984f0b4f3cfb6145f5975e96c385d752425c8e361900c33
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal 0xb code=0x1 addr=0xd8 pc=0x401b5c]
+
+goroutine 1 [running]:
+panic(0x7fe120, 0xc82000a0a0)
+	/usr/lib/go/src/runtime/panic.go:464 +0x3e6
+main.main()
+	/go/src/github.com/gzoller/portster/portster.go:56 +0xb5c
+AWS internal deployment
+Instance Host: 172.31.19.99
+TLS client obtained
+Container: 036b4e45c2391a10e984f0b4f3cfb6145f5975e96c385d752425c8e361900c33
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal 0xb code=0x1 addr=0xd8 pc=0x401b5c]
+...(repeats)
+
+It does:
+
+1) Successfully detect it's running on AWS on an internal IP
+2) Gets the AWS instance IP from the AWS service
+3) Gets the TLS client
+4) Gets the container ID for itself
+--and dies...
+
+THEORY: Something in the pem files or generation process is wrong, causing the failure.

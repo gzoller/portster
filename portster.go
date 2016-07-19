@@ -39,20 +39,25 @@ func main() {
         fmt.Println("Non-AWS deployment")
     }
     fmt.Println("Instance Host: "+hostIP)
+    /*
     endpoint := "tcp://"+hostIP+":2376"
     path := os.Getenv("DOCKER_CERT_PATH")
     ca := fmt.Sprintf("%s/ca.pem", path)
     cert := fmt.Sprintf("%s/cert.pem", path)
     key := fmt.Sprintf("%s/key.pem", path)
     client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
-    fmt.Println("TLS client obtained")
+    */
+    endpoint := "unix:///var/run/docker.sock"
+    client, _ := docker.NewClient(endpoint)
+    fmt.Println("Client obtained")
 
     cmd := exec.Command("containerId.sh")
     output, _ := cmd.CombinedOutput()
     cid := strings.Trim(string(output),"\n")
     fmt.Println("Container: "+cid)
 
-    container, _ := client.InspectContainer(cid)
+    container, _ := client.inspectContainer(cid)
+    fmt.Println("Container Inside: "+container)
     allPorts = container.NetworkSettings.PortMappingAPI()
     //fmt.Println( FindPort(9091,ports) )
 
