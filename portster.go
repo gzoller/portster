@@ -18,7 +18,6 @@ var allPorts []docker.APIPort
 var AWS_LOCAL_HOST_IP = "http://169.254.169.254/latest/meta-data/local-ipv4"
 var AWS_PUBLIC_HOST_IP = "http://169.254.169.254/latest/meta-data/public-ipv4"
 var hostIP string
-var client *Client
 
 func main() {
     hostIP = os.Getenv("HOST_IP")
@@ -35,17 +34,12 @@ func main() {
             hostIP = string(body)
         }
     }
+    endpoint := "tcp://"+hostIP+":2376"
     path := os.Getenv("DOCKER_CERT_PATH")
-    if( path == "" ) {
-        endpoint := "tcp://"+hostIP+":2376"
-        ca := fmt.Sprintf("%s/ca.pem", path)
-        cert := fmt.Sprintf("%s/cert.pem", path)
-        key := fmt.Sprintf("%s/key.pem", path)
-        client, _ = docker.NewTLSClient(endpoint, cert, key, ca)
-    } else {
-        endpoint := "unix:///var/run/docker.sock" // Must be mounted with -v like this: -v /var/run/docker.sock:/var/run/docker.sock
-        client, _ = docker.NewClient(endpoint)
-    }
+    ca := fmt.Sprintf("%s/ca.pem", path)
+    cert := fmt.Sprintf("%s/cert.pem", path)
+    key := fmt.Sprintf("%s/key.pem", path)
+    client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
 
     cmd := exec.Command("containerId.sh")
     output, _ := cmd.CombinedOutput()
