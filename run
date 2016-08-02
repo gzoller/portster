@@ -2,7 +2,6 @@
 # The above is how to run on S6 overlay absorbing all the needed env vars
 
 export DOCKER_CERT_PATH=/mnt/certs
-#export DOCKER_HOST=tcp://$HOST_IP:2376
 
 # As per runit, don't put this in the background!
 /usr/local/bin/portster
