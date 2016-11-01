@@ -48,9 +48,10 @@ func main() {
     cmd := exec.Command("containerId.sh")
     output, _ := cmd.CombinedOutput()
     cid := strings.Trim(string(output),"\n")
-    fmt.Println(cid)
+    fmt.Println("Container: ", cid)
 
     container, _ := client.InspectContainer(cid)
+    fmt.Println("Container: "+,container)
     allPorts = container.NetworkSettings.PortMappingAPI()
     //fmt.Println( FindPort(9091,ports) )
 
