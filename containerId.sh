@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cat /proc/self/cgroup | grep "docker" | sed s/\\//\\n/g | tail -1
+cat /proc/self/cgroup | grep "docker" | head -1 | sed s/.*\\///g

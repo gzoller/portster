@@ -34,12 +34,16 @@ func main() {
             hostIP = string(body)
         }
     }
+    /* If TLS security used
     endpoint := "tcp://"+hostIP+":2376"
     path := os.Getenv("DOCKER_CERT_PATH")
     ca := fmt.Sprintf("%s/ca.pem", path)
     cert := fmt.Sprintf("%s/cert.pem", path)
     key := fmt.Sprintf("%s/key.pem", path)
     client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
+    */
+    endpoint := "/var/run/docker.sock"
+    client, _ := docker.NewClient(endpoint)
 
     cmd := exec.Command("containerId.sh")
     output, _ := cmd.CombinedOutput()
