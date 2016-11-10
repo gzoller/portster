@@ -42,20 +42,20 @@ func main() {
     key := fmt.Sprintf("%s/key.pem", path)
     client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
     */
-    endpoint := "/var/run/docker.sock"
+    endpoint := "unit:///var/run/docker.sock"
     client, _ := docker.NewClient(endpoint)
 
     cmd := exec.Command("containerId.sh")
     output, _ := cmd.CombinedOutput()
     cid := strings.Trim(string(output),"\n")
-    fmt.Println("Container: ", cid)
+    fmt.Println("CID: ", cid)
 
     container, _ := client.InspectContainer(cid)
     fmt.Println("Container: ", container)
     allPorts = container.NetworkSettings.PortMappingAPI()
-    //fmt.Println( FindPort(9091,ports) )
 
     router := mux.NewRouter().StrictSlash(true)
+    fmt.Println("...Starting Portster...")
     router.HandleFunc("/port/{intPort}", GetPort)
     router.HandleFunc("/hostip", GetHostIP)
     router.HandleFunc("/ping", GetPing)
