@@ -42,7 +42,7 @@ func main() {
     key := fmt.Sprintf("%s/key.pem", path)
     client, _ := docker.NewTLSClient(endpoint, cert, key, ca)
     */
-    endpoint := "unit:///var/run/docker.sock"
+    endpoint := "unix:///var/run/docker.sock"
     client, _ := docker.NewClient(endpoint)
 
     cmd := exec.Command("containerId.sh")
