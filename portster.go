@@ -52,7 +52,7 @@ func main() {
 
     container, err := client.InspectContainer(cid)
     if( err != nil ) {
-        fmt.println("ERR: ", err)
+        fmt.Println("ERR: ", err)
     }
     fmt.Println("Container: ", container)
     allPorts = container.NetworkSettings.PortMappingAPI()
