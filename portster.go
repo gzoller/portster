@@ -50,7 +50,10 @@ func main() {
     cid := strings.Trim(string(output),"\n")
     fmt.Println("CID: ", cid)
 
-    container, _ := client.InspectContainer(cid)
+    container, err := client.InspectContainer(cid)
+    if( err != nil ) {
+        fmt.println("ERR: ", err)
+    }
     fmt.Println("Container: ", container)
     allPorts = container.NetworkSettings.PortMappingAPI()
 
