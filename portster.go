@@ -54,11 +54,10 @@ func main() {
     if( err != nil ) {
         fmt.Println("ERR: ", err)
     }
-    fmt.Println("Container: ", container)
     allPorts = container.NetworkSettings.PortMappingAPI()
 
     router := mux.NewRouter().StrictSlash(true)
-    fmt.Println("...Starting Portster...")
+    fmt.Println("Starting portster...")
     router.HandleFunc("/port/{intPort}", GetPort)
     router.HandleFunc("/hostip", GetHostIP)
     router.HandleFunc("/ping", GetPing)
